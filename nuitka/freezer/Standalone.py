@@ -1552,7 +1552,10 @@ def copyDataFiles(dist_dir, data_files):
         those must be registered as entry points, and would not go through
         necessary handling if provided like this.
     """
-    for source_desc, target_filename in data_files:
+    for terms_ in data_files:
+        if len(terms_) != 2:
+            continue
+        source_desc, target_filename = terms_
         target_filename = os.path.join(dist_dir, target_filename)
         assert isPathBelow(dist_dir, target_filename)
 

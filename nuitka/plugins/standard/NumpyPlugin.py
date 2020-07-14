@@ -291,10 +291,12 @@ class NumpyPlugin(NuitkaPluginBase):
     def onModuleEncounter(self, module_filename, module_name, module_kind):
         # pylint: disable=too-many-branches,too-many-return-statements
         elements = module_name.split(".")
-        if not self.scipy and elements[0] in ("scipy", "sklearn", "skimage"):
+        # if not self.scipy and elements[0] in ("scipy", "sklearn", "skimage"):
+        if not self.scipy and elements[0] in ("scipy"):
             return False, "Omit unneeded components"
 
-        if not self.matplotlib and elements[0] in ("matplotlib", "skimage"):
+        # if not self.matplotlib and elements[0] in ("matplotlib", "skimage"):
+        if not self.matplotlib and elements[0] in ("matplotlib"):
             return False, "Omit unneeded components"
 
         if module_name == "scipy.sparse.csgraph._validation":
