@@ -308,12 +308,12 @@ Should matplotlib be included with numpy, Default is %default.""",
     def onModuleEncounter(self, module_filename, module_name, module_kind):
         # pylint: disable=too-many-branches,too-many-return-statements
         if not self.scipy and module_name.hasOneOfNamespaces(
-            "scipy", "sklearn", "skimage"
+            "scipy" #, "sklearn", "skimage"
         ):
             return False, "Omit unneeded components"
 
         if not self.matplotlib and module_name.hasOneOfNamespaces(
-            "matplotlib", "skimage"
+            "matplotlib" #, "skimage"
         ):
             return False, "Omit unneeded components"
 
