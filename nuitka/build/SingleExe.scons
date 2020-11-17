@@ -1904,12 +1904,16 @@ if show_scons_mode:
 
 # Hack to make Scons use tempfile for gcc linking.
 if gcc_mode:
-
     def _makeGccUseLinkerFile():
         tmp_linker_filename = os.path.join(source_dir, "@sources.tmp")
+        tmp_linker_filename_shared = os.path.join(source_dir, "@sources-shared.tmp")
 
         env["LINKCOM"] = env["LINKCOM"].replace(
             "$SOURCES", "@%s" % env.get("ESCAPE", lambda x: x)(tmp_linker_filename)
+        )
+
+        env["SHLINKCOM"] = env["SHLINKCOM"].replace(
+            "$SOURCES", "@%s" % env.get("ESCAPE", lambda x: x)(tmp_linker_filename_shared)
         )
 
         with open(tmp_linker_filename, "w") as tmpfile:
@@ -1926,12 +1930,29 @@ if gcc_mode:
 
             tmpfile.write(env.subst("$SOURCES"))
 
+        with open(tmp_linker_filename_shared, "w") as tmpfile:
+            if rc_filename is not None:
+                source_files.append(rc_filename)
+
+            for filename in source_files:
+                filename = ".".join(filename.split(".")[:-1]) + ".os"
+
+                if os.name == "nt":
+                    filename = filename.replace(os.path.sep, "/")
+
+                tmpfile.write('"%s"\n' % filename)
+
+            tmpfile.write(env.subst("$SOURCES"))
+
     _makeGccUseLinkerFile()
 
 # Plugin contributed C defines should be used too.
 env.Append(CPPDEFINES=cpp_defines)
 # Plugin contributed link libraries should be used too.
 env.Append(LIBS=link_libraries)
+
+# env.Append(LINKCOM=env["LINKCOM"])
+
 
 Default(target)  # pylint: disable=undefined-variable
 
